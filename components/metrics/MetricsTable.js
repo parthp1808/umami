@@ -3,7 +3,7 @@ import { FormattedMessage } from 'react-intl';
 import { FixedSizeList } from 'react-window';
 import { useSpring, animated, config } from 'react-spring';
 import classNames from 'classnames';
-import Button from 'components/common/Button';
+import Link from 'components/common/Link';
 import Loading from 'components/common/Loading';
 import NoData from 'components/common/NoData';
 import useFetch from 'hooks/useFetch';
@@ -11,6 +11,7 @@ import Arrow from 'assets/arrow-right.svg';
 import { percentFilter } from 'lib/filters';
 import { formatNumber, formatLongNumber } from 'lib/format';
 import useDateRange from 'hooks/useDateRange';
+import usePageQuery from 'hooks/usePageQuery';
 import styles from './MetricsTable.module.css';
 
 export default function MetricsTable({
@@ -24,13 +25,17 @@ export default function MetricsTable({
   dataFilter,
   filterOptions,
   limit,
-  headerComponent,
   renderLabel,
   onDataLoad = () => {},
-  onExpand = () => {},
 }) {
   const [dateRange] = useDateRange(websiteId);
   const { startDate, endDate, modified } = dateRange;
+  const {
+    resolve,
+    router,
+    query: { url },
+  } = usePageQuery();
+
   const { data } = useFetch(
     `/api/website/${websiteId}/rankings`,
     {
@@ -38,6 +43,7 @@ export default function MetricsTable({
       start_at: +startDate,
       end_at: +endDate,
       domain: websiteDomain,
+      url,
       token,
     },
     { onDataLoad, delay: 300, update: [modified] },
@@ -85,7 +91,6 @@ export default function MetricsTable({
         <>
           <div className={styles.header}>
             <div className={styles.title}>{title}</div>
-            {headerComponent}
             <div className={styles.metric} onClick={handleSetFormat}>
               {metric}
             </div>
@@ -101,12 +106,16 @@ export default function MetricsTable({
                 )}
           </div>
           <div className={styles.footer}>
-            {limit && data.length > limit && (
-              <Button icon={<Arrow />} size="xsmall" onClick={() => onExpand(type)}>
-                <div>
-                  <FormattedMessage id="button.more" defaultMessage="More" />
-                </div>
-              </Button>
+            {limit && (
+              <Link
+                icon={<Arrow />}
+                href={router.pathname}
+                as={resolve({ view: type })}
+                size="small"
+                iconRight
+              >
+                <FormattedMessage id="button.more" defaultMessage="More" />
+              </Link>
             )}
           </div>
         </>

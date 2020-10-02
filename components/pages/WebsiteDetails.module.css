@@ -12,10 +12,13 @@
 
 .content {
   min-height: 600px;
+  padding: 20px 0;
 }
 
 .backButton {
-  align-self: flex-start;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-bottom: 16px;
 }
 
@@ -30,7 +33,7 @@
 
 .row > [class*='col-'] {
   border-left: 1px solid var(--gray300);
-  padding: 0 20px;
+  padding: 20px;
 }
 
 .row > [class*='col-']:first-child {
