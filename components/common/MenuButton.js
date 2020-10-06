@@ -9,6 +9,7 @@ export default function MenuButton({
   icon,
   value,
   options,
+  menuClassname,
   menuPosition = 'bottom',
   menuAlign = 'right',
   onSelect,
@@ -45,7 +46,7 @@ export default function MenuButton({
       </Button>
       {showMenu && (
         <Menu
-          className={styles.menu}
+          className={menuClassname}
           options={options}
           selectedOption={selectedOption}
           onSelect={handleSelect}
