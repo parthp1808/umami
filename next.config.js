@@ -4,9 +4,7 @@ const pkg = require('./package.json');
 module.exports = {
   env: {
     VERSION: pkg.version,
-  },
-  serverRuntimeConfig: {
-    PROJECT_ROOT: __dirname,
+    FORCE_SSL: !!process.env.FORCE_SSL,
   },
   webpack(config) {
     config.module.rules.push({
@@ -30,7 +28,16 @@ module.exports = {
           { key: "Access-Control-Allow-Methods", value: "GET,OPTIONS,PATCH,DELETE,POST,PUT" },
           { key: "Access-Control-Allow-Headers", value: "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version" },
         ]
-      }
+      },
+      {
+        source: '/umami.js',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=2592000', // 30 days
+          },
+        ],
+      },
     ]
-  }
+  },
 };
